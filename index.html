@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>for you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@300;400;500&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#170810;
+    --wine:#3a0f1e;
+    --blush:#f8ece4;
+    --blush-2:#f1ddd2;
+    --rose:#c85c73;
+    --rose-deep:#8f2f45;
+    --gold:#c99a54;
+    --text-dark:#3e1420;
+    --text-soft:#7a4a52;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    width:100%; height:100%;
+    background:var(--ink);
+    overflow-x:hidden;
+    font-family:'Jost',sans-serif;
+  }
+  /* ---------- INTRO ---------- */
+  #intro{
+    position:fixed; inset:0;
+    background:radial-gradient(ellipse at 50% 45%, var(--wine) 0%, var(--ink) 72%);
+    display:flex; align-items:center; justify-content:center;
+    z-index:20;
+    transition:opacity 1.4s ease, transform 1.4s ease;
+  }
+  #intro.leaving{ opacity:0; transform:scale(1.08); pointer-events:none; }
+  canvas#heart{ width:min(92vw,560px); height:min(92vw,560px); display:block; }
+  #intro-caption{
+    position:absolute; bottom:9vh; left:0; right:0;
+    text-align:center;
+    color:var(--rose);
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:clamp(15px,2.4vw,20px);
+    letter-spacing:.04em;
+    opacity:0;
+    transition:opacity 1.2s ease;
+  }
+  #intro-caption.show{ opacity:.85; }
+  #skip-btn{
+    position:absolute; top:24px; right:28px;
+    background:none; border:1px solid rgba(230,180,190,.35);
+    color:rgba(240,220,224,.75);
+    font-family:'Jost',sans-serif; font-size:12px; letter-spacing:.12em;
+    text-transform:uppercase;
+    padding:8px 16px; border-radius:2px; cursor:pointer;
+    transition:border-color .3s ease, color .3s ease;
+  }
+  #skip-btn:hover{ border-color:rgba(230,180,190,.8); color:#fff; }
+
+  /* ---------- MAIN CONTENT ---------- */
+  #page{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 20% -10%, var(--blush-2) 0%, transparent 55%),
+      var(--blush);
+    display:flex; align-items:center; justify-content:center;
+    padding:11vh 6vw 8vh;
+  }
+  #content{
+    max-width:420px;
+    width:100%;
+    text-align:center;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity 1.1s ease, transform 1.1s ease;
+  }
+  #content.reveal{ opacity:1; transform:translateY(0); }
+
+  .eyebrow{
+    font-size:12px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--rose-deep); font-weight:500; margin-bottom:14px;
+  }
+  .eyebrow::before, .eyebrow::after{
+    content:'—'; margin:0 10px; color:var(--gold); opacity:.7;
+  }
+
+  .tap-hint{
+    font-size:13px; letter-spacing:.08em; color:var(--text-soft);
+    margin-bottom:26px; opacity:.85;
+  }
+  .tap-hint.hide{ opacity:0; transition:opacity .5s ease; }
+
+  /* ---- the card ---- */
+  .card-wrap{ perspective:2200px; margin:0 auto; max-width:340px; }
+  .card{
+    position:relative;
+    width:100%;
+    min-height:520px;
+    transform:rotate(-3deg);
+    transition:transform .3s ease;
+  }
+  .card-inside{
+    background:var(--blush-2);
+    border:1px solid rgba(201,154,84,.55);
+    border-radius:6px;
+    padding:40px 28px 34px;
+    box-shadow:0 26px 60px -26px rgba(60,10,20,.4);
+    min-height:520px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .card-cover{
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(200,92,115,.28) 0%, transparent 55%),
+      linear-gradient(160deg, var(--wine) 0%, var(--ink) 100%);
+    border:1px solid rgba(201,154,84,.6);
+    border-radius:6px;
+    transform-origin:left center;
+    transition:transform 1.15s cubic-bezier(.65,0,.35,1);
+    box-shadow:0 26px 60px -22px rgba(0,0,0,.5);
+    cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    backface-visibility:hidden;
+    z-index:5;
+    animation:coverPulse 2.6s ease-in-out infinite;
+  }
+  .card-cover.open{
+    transform:rotateY(-152deg);
+    pointer-events:none;
+    animation:none;
+  }
+  @keyframes coverPulse{
+    0%,100%{ box-shadow:0 26px 60px -22px rgba(0,0,0,.5); }
+    50%{ box-shadow:0 26px 60px -22px rgba(0,0,0,.5), 0 0 0 6px rgba(201,154,84,.12); }
+  }
+  .cover-heart{ font-size:34px; color:var(--rose); margin-bottom:14px; }
+  .cover-title{
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:500;
+    color:var(--blush); font-size:30px; margin-bottom:10px;
+  }
+  .cover-sub{
+    font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--rose); opacity:.8;
+  }
+
+  .frame{
+    width:150px; height:150px; margin:0 auto 22px;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    background:var(--blush);
+    position:relative;
+  }
+  .frame::before{
+    content:''; position:absolute; inset:-8px;
+    border:1px solid rgba(200,92,115,.35); border-radius:50%;
+  }
+  .frame span{
+    font-family:'Cormorant Garamond', serif; font-style:italic;
+    color:var(--text-soft); font-size:12px; padding:0 18px; text-align:center;
+    line-height:1.5;
+  }
+  .frame img{ width:100%; height:100%; object-fit:cover; border-radius:50%; display:none; }
+
+  .letter-greeting{
+    font-family:'Caveat', cursive;
+    font-weight:600;
+    font-size:30px;
+    color:var(--rose-deep);
+    margin-bottom:2px;
+  }
+
+  h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:clamp(26px,5.6vw,34px);
+    line-height:1.18;
+    color:var(--text-dark);
+    margin-bottom:16px;
+  }
+  h1 em{ font-style:italic; color:var(--rose-deep); }
+
+  .message{
+    font-family:'Caveat', cursive;
+    font-weight:500;
+    font-size:23px;
+    line-height:1.55;
+    color:var(--text-dark);
+    max-width:340px; margin:0 auto 12px;
+  }
+
+  .signature{
+    font-family:'Caveat', cursive;
+    font-weight:600;
+    font-size:24px;
+    color:var(--rose-deep);
+    align-self:flex-end;
+    margin:6px 6px 26px 0;
+  }
+
+  .actions{
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    gap:18px; flex-wrap:wrap;
+    min-height:64px;
+    margin-top:auto;
+  }
+  button.choice{
+    font-family:'Jost',sans-serif;
+    font-size:14px; letter-spacing:.06em;
+    padding:14px 32px;
+    border-radius:40px;
+    cursor:pointer;
+    transition:transform .25s ease, background .25s ease, box-shadow .25s ease;
+  }
+  #yes-btn{
+    border:none;
+    background:var(--rose-deep);
+    color:var(--blush);
+    box-shadow:0 10px 24px -10px rgba(143,47,69,.6);
+  }
+  #yes-btn:hover{ transform:translateY(-2px); background:#7a2338; }
+  #no-btn{
+    border:1px solid var(--text-soft);
+    background:transparent;
+    color:var(--text-soft);
+    position:relative;
+  }
+
+  .footnote{
+    margin-top:22px; font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--text-soft); opacity:.55;
+  }
+
+  /* ---------- SUCCESS ---------- */
+  #success{
+    position:fixed; inset:0; z-index:30;
+    background:radial-gradient(ellipse at 50% 40%, var(--wine) 0%, var(--ink) 75%);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .9s ease;
+    text-align:center; padding:8vw;
+  }
+  #success.show{ opacity:1; pointer-events:auto; }
+  #success h2{
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:500;
+    color:var(--blush); font-size:clamp(30px,5.6vw,46px); margin-bottom:16px;
+  }
+  #success p{
+    color:var(--rose); font-size:15px; letter-spacing:.05em; font-weight:300;
+    margin-bottom:34px;
+  }
+  #continue-link{
+    display:inline-block;
+    font-family:'Jost',sans-serif;
+    font-size:14px; letter-spacing:.06em;
+    padding:14px 34px;
+    border-radius:40px;
+    text-decoration:none;
+    border:none;
+    background:var(--rose-deep);
+    color:var(--blush);
+    box-shadow:0 10px 24px -10px rgba(143,47,69,.6);
+    transition:transform .25s ease, background .25s ease;
+  }
+  #continue-link:hover{ transform:translateY(-2px); background:#7a2338; }
+
+  @media (prefers-reduced-motion: reduce){
+    #intro, #content, #success{ transition:none !important; }
+  }
+
+  @media (max-width:640px){
+    #content{ max-width:100%; }
+    .card-wrap{
+      max-width:78vw;
+      margin-left:auto;
+      margin-right:2vw;
+    }
+    .card{ transform:rotate(-7deg); }
+    .card-inside, .card-cover{ padding-left:22px; padding-right:22px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <button id="skip-btn" aria-label="Skip intro">skip</button>
+  <canvas id="heart" width="600" height="600"></canvas>
+  <div id="intro-caption">every piece was worth the wait</div>
+</div>
+
+<div id="page">
+  <div id="content">
+    <p class="eyebrow">for you</p>
+    <p class="tap-hint" id="tap-hint">tap the card to open it</p>
+    <div class="card-wrap">
+      <div class="card">
+        <div class="card-inside">
+          <div class="frame"><span>your photo here</span><img id="her-photo" alt=""></div>
+          <p class="letter-greeting">Dear you,</p>
+          <h1>Will you go out<br>with <em>me?</em></h1>
+          <p class="message">
+            I've been meaning to say this for a while, and I figured a heart made of a
+            thousand tiny pieces was a fitting way to start. No pressure — just an
+            honest question, from me to you.
+          </p>
+          <p class="signature">— yours</p>
+          <div class="actions">
+            <button id="yes-btn" class="choice">Yes, I'd love to</button>
+            <button id="no-btn" class="choice">Not right now</button>
+          </div>
+        </div>
+        <div class="card-cover" id="card-cover">
+          <div class="cover-heart">&#10084;</div>
+          <p class="cover-title">for you</p>
+          <p class="cover-sub">tap to open</p>
+        </div>
+      </div>
+    </div>
+    <p class="footnote">made with a little bit of nerve</p>
+  </div>
+</div>
+
+<div id="success">
+  <div>
+    <h2>She said yes.</h2>
+    <p>go on, tell her when and where</p>
+    <a id="continue-link" href="https://ayu243sh-tech.github.io/Radhakrishna-/">continue &#10084;</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var canvas = document.getElementById('heart');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function heartPoint(t, scale){
+    var x = 16 * Math.pow(Math.sin(t), 3);
+    var y = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+    return { x: W/2 + x*scale, y: H/2 - y*scale + 10 };
+  }
+
+  var WORDS = ['LOVE YOU','I LOVE YOU'];
+  var COUNT = 620;
+  var particles = [];
+  for (var i=0;i<COUNT;i++){
+    var t = (i/COUNT) * Math.PI * 2;
+    var jitter = (Math.random()-0.5)*0.9;
+    var layer = Math.random();
+    var scaleWobble = layer < 0.6 ? 15.6 : (15.6 + (Math.random()-0.5)*3.4);
+    var target = heartPoint(t + jitter*0.024, scaleWobble);
+    particles.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      startX: 0, startY: 0,
+      tx: target.x,
+      ty: target.y,
+      word: WORDS[Math.random() < 0.35 ? 1 : 0],
+      fontSize: 6 + Math.random()*4,
+      core: layer < 0.55,
+      rot: (Math.random()-0.5) * 0.5,
+      flicker: Math.random()*Math.PI*2,
+      delay: Math.random()*0.35
+    });
+  }
+  particles.forEach(function(p){ p.startX = p.x; p.startY = p.y; });
+
+  var duration = reduced ? 100 : 2600;
+  var start = null;
+  var pulseStart = null;
+  var phase = 'assemble';
+
+  function ease(t){ return 1 - Math.pow(1-t, 3); }
+
+  function draw(ts){
+    if (!start) start = ts;
+    var elapsed = ts - start;
+    ctx.clearRect(0,0,W,H);
+
+    if (phase === 'assemble'){
+      var overallT = Math.min(elapsed / duration, 1);
+      particles.forEach(function(p){
+        var pt = Math.max(0, Math.min(1, (overallT - p.delay*0.4) / (1 - p.delay*0.4)));
+        var e = ease(pt);
+        var x = p.startX + (p.tx - p.startX) * e;
+        var y = p.startY + (p.ty - p.startY) * e;
+        var flick = 0.55 + 0.45*Math.sin(p.flicker + elapsed/260);
+        var alpha = (0.25 + 0.65*e) * (p.core ? 0.9 : 0.55*flick + 0.2);
+        ctx.font = p.fontSize + 'px Jost, sans-serif';
+        ctx.fillStyle = p.core ? 'rgba(230,70,96,'+alpha+')' : 'rgba(196,50,72,'+alpha+')';
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(p.rot * (1-e));
+        ctx.fillText(p.word, 0, 0);
+        ctx.restore();
+      });
+      if (overallT >= 1){
+        phase = 'pulse';
+        pulseStart = ts;
+        document.getElementById('intro-caption').classList.add('show');
+      }
+    } else if (phase === 'pulse'){
+      var pe = ts - pulseStart;
+      var beat = Math.sin(pe/280) * 0.06;
+      var s = 1 + Math.max(0, beat);
+      particles.forEach(function(p){
+        var dx = (p.tx - W/2) * (s-1);
+        var dy = (p.ty - H/2) * (s-1);
+        var flick = 0.55 + 0.45*Math.sin(p.flicker + pe/260);
+        var alpha = p.core ? 0.95 : 0.5*flick + 0.25;
+        ctx.font = p.fontSize + 'px Jost, sans-serif';
+        ctx.fillStyle = p.core ? 'rgba(230,70,96,'+alpha+')' : 'rgba(196,50,72,'+alpha+')';
+        ctx.fillText(p.word, p.tx+dx, p.ty+dy);
+      });
+      if (pe > 1500 || reduced){
+        finish();
+        return;
+      }
+    }
+    raf = requestAnimationFrame(draw);
+  }
+
+  var raf = requestAnimationFrame(draw);
+  var finished = false;
+
+  function finish(){
+    if (finished) return;
+    finished = true;
+    cancelAnimationFrame(raf);
+    var intro = document.getElementById('intro');
+    intro.classList.add('leaving');
+    document.getElementById('content').classList.add('reveal');
+    setTimeout(function(){ intro.style.display = 'none'; }, 1500);
+  }
+
+  document.getElementById('skip-btn').addEventListener('click', finish);
+  if (reduced) setTimeout(finish, 200);
+})();
+
+(function(){
+  var cover = document.getElementById('card-cover');
+  var hint = document.getElementById('tap-hint');
+  cover.addEventListener('click', function(){
+    cover.classList.add('open');
+    hint.classList.add('hide');
+  });
+})();
+
+(function(){
+  var noBtn = document.getElementById('no-btn');
+  var actions = document.querySelector('.actions');
+  noBtn.addEventListener('click', function(){
+    var maxX = actions.clientWidth - noBtn.clientWidth - 10;
+    var maxY = actions.clientHeight - noBtn.clientHeight - 10;
+    var rx = (Math.random()*maxX) - maxX/2;
+    var ry = (Math.random()*maxY) - maxY/2;
+    noBtn.style.position = 'relative';
+    noBtn.style.transform = 'translate(' + rx + 'px,' + ry + 'px)';
+  });
+
+  document.getElementById('yes-btn').addEventListener('click', function(){
+    document.getElementById('success').classList.add('show');
+  });
+})();
+</script>
+</body>
+</html>
