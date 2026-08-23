@@ -215,60 +215,23 @@
     cursor:pointer;
     transition:transform .25s ease, background .25s ease, box-shadow .25s ease;
   }
-  #yes-btn{
+  #continue-btn{
+    display:inline-block;
+    text-decoration:none;
     border:none;
     background:var(--rose-deep);
     color:var(--blush);
     box-shadow:0 10px 24px -10px rgba(143,47,69,.6);
   }
-  #yes-btn:hover{ transform:translateY(-2px); background:#7a2338; }
-  #no-btn{
-    border:1px solid var(--text-soft);
-    background:transparent;
-    color:var(--text-soft);
-    position:relative;
-  }
+  #continue-btn:hover{ transform:translateY(-2px); background:#7a2338; }
 
   .footnote{
     margin-top:22px; font-size:11px; letter-spacing:.1em;
     text-transform:uppercase; color:var(--text-soft); opacity:.55;
   }
 
-  /* ---------- SUCCESS ---------- */
-  #success{
-    position:fixed; inset:0; z-index:30;
-    background:radial-gradient(ellipse at 50% 40%, var(--wine) 0%, var(--ink) 75%);
-    display:flex; align-items:center; justify-content:center;
-    opacity:0; pointer-events:none;
-    transition:opacity .9s ease;
-    text-align:center; padding:8vw;
-  }
-  #success.show{ opacity:1; pointer-events:auto; }
-  #success h2{
-    font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:500;
-    color:var(--blush); font-size:clamp(30px,5.6vw,46px); margin-bottom:16px;
-  }
-  #success p{
-    color:var(--rose); font-size:15px; letter-spacing:.05em; font-weight:300;
-    margin-bottom:34px;
-  }
-  #continue-link{
-    display:inline-block;
-    font-family:'Jost',sans-serif;
-    font-size:14px; letter-spacing:.06em;
-    padding:14px 34px;
-    border-radius:40px;
-    text-decoration:none;
-    border:none;
-    background:var(--rose-deep);
-    color:var(--blush);
-    box-shadow:0 10px 24px -10px rgba(143,47,69,.6);
-    transition:transform .25s ease, background .25s ease;
-  }
-  #continue-link:hover{ transform:translateY(-2px); background:#7a2338; }
-
   @media (prefers-reduced-motion: reduce){
-    #intro, #content, #success{ transition:none !important; }
+    #intro, #content{ transition:none !important; }
   }
 
   @media (max-width:640px){
@@ -308,8 +271,7 @@
           </p>
           <p class="signature">— yours</p>
           <div class="actions">
-            <button id="yes-btn" class="choice">Yes, I'd love to</button>
-            <button id="no-btn" class="choice">Not right now</button>
+            <a id="continue-btn" class="choice" href="Story.html">Continue</a>
           </div>
         </div>
         <div class="card-cover" id="card-cover">
@@ -320,14 +282,6 @@
       </div>
     </div>
     <p class="footnote">made with a little bit of nerve</p>
-  </div>
-</div>
-
-<div id="success">
-  <div>
-    <h2>She said yes.</h2>
-    <p>go on, tell her when and where</p>
-    <a id="continue-link" href="https://ayu243sh-tech.github.io/Radhakrishna-/">continue &#10084;</a>
   </div>
 </div>
 
@@ -450,22 +404,6 @@
   });
 })();
 
-(function(){
-  var noBtn = document.getElementById('no-btn');
-  var actions = document.querySelector('.actions');
-  noBtn.addEventListener('click', function(){
-    var maxX = actions.clientWidth - noBtn.clientWidth - 10;
-    var maxY = actions.clientHeight - noBtn.clientHeight - 10;
-    var rx = (Math.random()*maxX) - maxX/2;
-    var ry = (Math.random()*maxY) - maxY/2;
-    noBtn.style.position = 'relative';
-    noBtn.style.transform = 'translate(' + rx + 'px,' + ry + 'px)';
-  });
-
-  document.getElementById('yes-btn').addEventListener('click', function(){
-    document.getElementById('success').classList.add('show');
-  });
-})();
 </script>
 </body>
 </html>
