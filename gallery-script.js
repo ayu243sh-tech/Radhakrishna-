@@ -1,6 +1,6 @@
 // scale card size + radius up on smaller screens so photos stay readable on phones
 var vw = window.innerWidth;
-var scaleFactor = vw < 480 ? 1.6 : (vw < 900 ? 1.25 : 1);
+var scaleFactor = vw < 480 ? 2.2 : (vw < 900 ? 1.25 : 1);
 
 var radius = Math.round(240 * scaleFactor);
 var autoRotate = true; 
@@ -121,7 +121,7 @@ function syncZoomSlider() {
 // recompute card size if the phone is rotated
 window.addEventListener('resize', function () {
   var newVw = window.innerWidth;
-  var newScale = newVw < 480 ? 1.6 : (newVw < 900 ? 1.25 : 1);
+  var newScale = newVw < 480 ? 2.2 : (newVw < 900 ? 1.25 : 1);
   imgWidth = Math.round(120 * newScale);
   imgHeight = Math.round(170 * newScale);
   ospin.style.width = imgWidth + "px";
