@@ -1,12 +1,16 @@
-var radius = 240; 
+// scale card size + radius up on smaller screens so photos stay readable on phones
+var vw = window.innerWidth;
+var scaleFactor = vw < 480 ? 1.6 : (vw < 900 ? 1.25 : 1);
+
+var radius = Math.round(240 * scaleFactor);
 var autoRotate = true; 
 var rotateSpeed = -60; 
-var imgWidth = 120; 
-var imgHeight = 170; 
+var imgWidth = Math.round(120 * scaleFactor);
+var imgHeight = Math.round(170 * scaleFactor);
 var bgMusicURL = 'https://user-images.githubusercontent.com/151072490/283747943-7b08424b-8647-4bdc-996c-965063dbb5e3.mp4';
 var bgMusicControls = true; 
-var minRadius = 120;
-var maxRadius = 500;
+var minRadius = Math.round(120 * scaleFactor);
+var maxRadius = Math.round(500 * scaleFactor);
 setTimeout(init, 1000);
 var odrag = document.getElementById('drag-container');
 var ospin = document.getElementById('spin-container');
@@ -113,3 +117,24 @@ if (zoomSlider) {
 function syncZoomSlider() {
   if (zoomSlider) zoomSlider.value = radius;
 }
+
+// recompute card size if the phone is rotated
+window.addEventListener('resize', function () {
+  var newVw = window.innerWidth;
+  var newScale = newVw < 480 ? 1.6 : (newVw < 900 ? 1.25 : 1);
+  imgWidth = Math.round(120 * newScale);
+  imgHeight = Math.round(170 * newScale);
+  ospin.style.width = imgWidth + "px";
+  ospin.style.height = imgHeight + "px";
+  radius = Math.round(240 * newScale);
+  minRadius = Math.round(120 * newScale);
+  maxRadius = Math.round(500 * newScale);
+  ground.style.width = radius * 3 + "px";
+  ground.style.height = radius * 3 + "px";
+  init(1);
+  syncZoomSlider();
+  if (zoomSlider) {
+    zoomSlider.min = minRadius;
+    zoomSlider.max = maxRadius;
+  }
+});
