@@ -84,7 +84,6 @@
               <div class="title">I love You ❤️</div>
               <div class="num">10</div>
               <img src="10.png" />
-              <a href="Gallery.html" style="display:inline-block; margin-top:12px; color:#fff; text-decoration:underline; font-weight:bold;">click here</a>
             </div>
           </div>
         </div>
@@ -128,6 +127,33 @@
         
         <div class="cursor"></div>
         <div class="cursor cursor2"></div>
+
+        <a href="Gallery.html" id="next-page-btn">
+          Continue &#10148;
+        </a>
+
+        <style>
+          #next-page-btn{
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            z-index: 999;
+            display: inline-block;
+            padding: 14px 26px;
+            background: #ffffff;
+            color: #111;
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            text-decoration: none;
+            border-radius: 40px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+          }
+          #next-page-btn:active{
+            transform: scale(0.96);
+          }
+        </style>
+
         <!-- partial -->
           <script  src="./script.js"></script>
 </body>
