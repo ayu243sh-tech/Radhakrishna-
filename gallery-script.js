@@ -1,16 +1,17 @@
-// scale card size + radius up on smaller screens so photos stay readable on phones
+// card size and zoom-depth are scaled separately so zoom can't overshoot the 3D perspective
 var vw = window.innerWidth;
-var scaleFactor = vw < 480 ? 2.2 : (vw < 900 ? 1.25 : 1);
+var sizeScale = vw < 480 ? 3.3 : (vw < 900 ? 2.0 : 1.5);   // physical card size
+var radiusScale = vw < 480 ? 1.6 : (vw < 900 ? 1.35 : 1.15);    // zoom / spacing depth
 
-var radius = Math.round(240 * scaleFactor);
+var radius = Math.round(240 * radiusScale);
 var autoRotate = true; 
 var rotateSpeed = -60; 
-var imgWidth = Math.round(120 * scaleFactor);
-var imgHeight = Math.round(170 * scaleFactor);
+var imgWidth = Math.round(120 * sizeScale);
+var imgHeight = Math.round(170 * sizeScale);
 var bgMusicURL = 'https://user-images.githubusercontent.com/151072490/283747943-7b08424b-8647-4bdc-996c-965063dbb5e3.mp4';
 var bgMusicControls = true; 
-var minRadius = Math.round(120 * scaleFactor);
-var maxRadius = Math.round(500 * scaleFactor);
+var minRadius = Math.round(150 * radiusScale);
+var maxRadius = Math.round(420 * radiusScale);
 setTimeout(init, 1000);
 var odrag = document.getElementById('drag-container');
 var ospin = document.getElementById('spin-container');
@@ -121,14 +122,15 @@ function syncZoomSlider() {
 // recompute card size if the phone is rotated
 window.addEventListener('resize', function () {
   var newVw = window.innerWidth;
-  var newScale = newVw < 480 ? 2.2 : (newVw < 900 ? 1.25 : 1);
-  imgWidth = Math.round(120 * newScale);
-  imgHeight = Math.round(170 * newScale);
+  var newSizeScale = newVw < 480 ? 3.3 : (newVw < 900 ? 2.0 : 1.5);
+  var newRadiusScale = newVw < 480 ? 1.6 : (newVw < 900 ? 1.35 : 1.15);
+  imgWidth = Math.round(120 * newSizeScale);
+  imgHeight = Math.round(170 * newSizeScale);
   ospin.style.width = imgWidth + "px";
   ospin.style.height = imgHeight + "px";
-  radius = Math.round(240 * newScale);
-  minRadius = Math.round(120 * newScale);
-  maxRadius = Math.round(500 * newScale);
+  radius = Math.round(240 * newRadiusScale);
+  minRadius = Math.round(150 * newRadiusScale);
+  maxRadius = Math.round(420 * newRadiusScale);
   ground.style.width = radius * 3 + "px";
   ground.style.height = radius * 3 + "px";
   init(1);
